@@ -82,7 +82,7 @@ cd selenium-pom-framework
 
 ## Author
 
-###Devesh
+Devesh<br>
 SDET | Automation Testing | Java Selenium
 
 
