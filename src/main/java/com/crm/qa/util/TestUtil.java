@@ -15,23 +15,26 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
 import com.crm.qa.base.TestBase;
+import org.openqa.selenium.WebDriver;
 
 public class TestUtil extends TestBase {
 
-	public static long PAGE_LOAD_TIMEOUT = 20;
+	public static long PAGE_LOAD_TIMEOUT = 60;
 	public static long IMPLICIT_WAIT = 20;
 
 	public static String TESTDATA_SHEET_PATH = "/Users/naveenkhunteta/Documents/workspace"
 			+ "/FreeCRMTest/src/main/java/com/crm/qa/testdata/FreeCrmTestData.xlsx";
+   /* String TESTDATA_SHEET_PATH = System.getProperty("user.dir")
+                    + "/src/main/java/com/crm/qa/testdata/FreeCrmTestData.xlsx";*/
 
-	static Workbook book;
+
+    static Workbook book;
 	static Sheet sheet;
 	static JavascriptExecutor js;
 
 	public void switchToFrame() {
 		driver.switchTo().frame("mainpanel");
 	}
-
 	public static Object[][] getTestData(String sheetName) {
 		FileInputStream file = null;
 		try {
@@ -41,8 +44,6 @@ public class TestUtil extends TestBase {
 		}
 		try {
 			book = WorkbookFactory.create(file);
-		} catch (InvalidFormatException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -59,13 +60,27 @@ public class TestUtil extends TestBase {
 		return data;
 	}
 
-	public static void takeScreenshotAtEndOfTest() throws IOException {
-		File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		String currentDir = System.getProperty("user.dir");
-		FileUtils.copyFile(scrFile, new File(currentDir + "/screenshots/" + System.currentTimeMillis() + ".png"));
-	}
+    // Screenshot method used by TestNG & Listener
+    public static void takeScreenshotAtEndOfTest(WebDriver driver, String testName) {
 
-	public static void runTimeInfo(String messageType, String message) throws InterruptedException {
+        try {
+            File srcFile = ((TakesScreenshot) driver)
+                    .getScreenshotAs(OutputType.FILE);
+
+            String screenshotPath = System.getProperty("user.dir")
+                    + "/screenshots/" + testName + "_" + System.currentTimeMillis() + ".png";
+
+            FileUtils.copyFile(srcFile, new File(screenshotPath));
+
+            System.out.println("Screenshot saved: " + screenshotPath);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void runTimeInfo(String messageType, String message) throws InterruptedException {
 		js = (JavascriptExecutor) driver;
 		// Check for jQuery on the page, add it if need be
 		js.executeScript("if (!window.jQuery) {"

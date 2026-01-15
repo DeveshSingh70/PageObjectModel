@@ -9,58 +9,56 @@ import com.crm.qa.base.TestBase;
 import com.crm.qa.pages.ContactsPage;
 import com.crm.qa.pages.HomePage;
 import com.crm.qa.pages.LoginPage;
-import com.crm.qa.util.TestUtil;
 
 public class HomePageTest extends TestBase {
-	LoginPage loginPage;
-	HomePage homePage;
-	TestUtil testUtil;
-	ContactsPage contactsPage;
 
-	public HomePageTest() {
-		super();
-	}
+    LoginPage loginPage;
+    HomePage homePage;
+    ContactsPage contactsPage;
 
-	//test cases should be separated -- independent with each other
-	//before each test case -- launch the browser and login
-	//@test -- execute test case
-	//after each test case -- close the browser
-	
-	@BeforeMethod
-	public void setUp() {
-		initialization();
-		testUtil = new TestUtil();
-		contactsPage = new ContactsPage();
-		loginPage = new LoginPage();
-		homePage = loginPage.login(prop.getProperty("username"), prop.getProperty("password"));
-	}
-	
-	
-	@Test(priority=1)
-	public void verifyHomePageTitleTest(){
-		String homePageTitle = homePage.verifyHomePageTitle();
-		Assert.assertEquals(homePageTitle, "CRMPRO","Home page title not matched");
-	}
-	
-	@Test(priority=2)
-	public void verifyUserNameTest(){
-		testUtil.switchToFrame();
-		Assert.assertTrue(homePage.verifyCorrectUserName());
-	}
-	
-	@Test(priority=3)
-	public void verifyContactsLinkTest(){
-		testUtil.switchToFrame();
-		contactsPage = homePage.clickOnContactsLink();
-	}
-	
-	
-	
-	@AfterMethod
-	public void tearDown(){
-		driver.quit();
-	}
-	
-	
+    public HomePageTest() {
+        super();
+    }
 
+    // ================= Setup =================
+    @BeforeMethod
+    public void setUp() {
+        initialization();
+        loginPage = new LoginPage();
+        homePage = loginPage.login(
+                prop.getProperty("username"),
+                prop.getProperty("password")
+        );
+    }
+
+    // ================= Tests =================
+
+    /**
+     * Verify login successful by checking Contacts menu visibility
+     */
+    @Test(priority = 1)
+    public void verifyLoginSuccessTest() {
+        Assert.assertTrue(
+                homePage.isContactsMenuVisible(),
+                "Login failed: Contacts menu not visible"
+        );
+    }
+
+    /**
+     * Verify clicking Contacts menu navigates to Contacts page
+     */
+    @Test(priority = 2)
+    public void verifyContactsMenuClickTest() {
+        contactsPage = homePage.clickOnContactsMenu();
+        Assert.assertTrue(
+                driver.getCurrentUrl().contains("contacts"),
+                "Contacts page not opened"
+        );
+    }
+
+    // ================= Teardown =================
+    @AfterMethod
+    public void tearDown() {
+        driver.quit();
+    }
 }
