@@ -67,7 +67,7 @@ pom.xml
 
 ## How to Execute Tests
 
-## Clone Repository
+### Clone Repository
 git clone https://github.com/DeveshSingh70/PageObjectModel.git
 cd selenium-pom-framework
 ### Run tests using Maven
