@@ -80,3 +80,8 @@ pipeline {
                         -DsuiteXmlFile=${suiteFile} ^
                         -Denv=${params.ENV} ^
                         -Dbrowser=${params.BROWSER} ^
+                         -Dheadless=${params.HEADLESS}
+                                    """
+                                }
+                            }
+                        }
