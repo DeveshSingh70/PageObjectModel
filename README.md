@@ -57,7 +57,7 @@ pom.xml
 
 ## Features
 
--Page Object Model (POM) implementation
+-Page Object Model (POM) implementation.
 -Cross-browser test execution support
 -Automated screenshot capture on test failure
 -Extent HTML reporting
