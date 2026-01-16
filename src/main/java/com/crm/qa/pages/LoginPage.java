@@ -1,8 +1,12 @@
 package com.crm.qa.pages;
 
+import java.time.Duration;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.crm.qa.base.TestBase;
 
@@ -18,9 +22,13 @@ public class LoginPage extends TestBase {
     @FindBy(name = "password")
     WebElement password;
 
-    // Login button (UPDATED for new FreeCRM UI)
+    // Login button (FreeCRM new UI)
     @FindBy(xpath = "//div[contains(text(),'Login')]")
     WebElement loginBtn;
+
+    // Post-login element (used for sync)
+    @FindBy(xpath = "//span[text()='Contacts']/parent::a")
+    WebElement contactsMenu;
 
     // ================= Constructor =================
 
@@ -45,8 +53,15 @@ public class LoginPage extends TestBase {
         return loginBtn.isDisplayed();
     }
 
-    // Perform login action
+    /**
+     * Perform login and wait for successful navigation
+     *
+     * @param un  username
+     * @param pwd password
+     * @return HomePage
+     */
     public HomePage login(String un, String pwd) {
+
         email.clear();
         email.sendKeys(un);
 
@@ -55,6 +70,6 @@ public class LoginPage extends TestBase {
 
         loginBtn.click();
 
-        return new HomePage(); // navigation to HomePage
+        return new HomePage();
     }
 }

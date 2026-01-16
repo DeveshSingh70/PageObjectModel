@@ -12,36 +12,30 @@
 
     <!-- ================= Java Configuration ================= -->
     <properties>
-        <!-- Java version used across project -->
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-
-        <!-- Encoding -->
+        <!-- Match runtime JDK -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <!-- ================= Dependencies ================= -->
     <dependencies>
 
-        <!-- ================= Selenium WebDriver ================= -->
-        <!-- Core browser automation library -->
+        <!-- Selenium WebDriver -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>4.18.1</version>
         </dependency>
 
-        <!-- ================= TestNG ================= -->
-        <!-- Test framework for execution, assertions, parallel runs -->
+        <!-- TestNG -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>7.9.0</version>
-            
         </dependency>
 
-        <!-- ================= Apache POI ================= -->
-        <!-- Used for reading test data from Excel -->
+        <!-- Apache POI -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -54,40 +48,42 @@
             <version>5.2.5</version>
         </dependency>
 
-        <!-- ================= Commons IO ================= -->
-        <!-- File operations (screenshots, file copy, etc.) -->
+        <!-- Commons IO -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.15.1</version>
         </dependency>
 
-        <!-- ================= Logging ================= -->
-        <!-- Legacy Log4j (used in older frameworks like FreeCRM) -->
+        <!-- Log4j (legacy, required by freemarker / extentreports) -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
 
-        <!-- ================= WebDriverManager ================= -->
-        <!-- Automatically downloads & manages browser drivers -->
+        <!-- SLF4J implementation -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+
+        <!-- WebDriverManager -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
             <version>5.8.0</version>
         </dependency>
 
-        <!-- ================= Extent Reports ================= -->
-        <!-- Rich HTML reporting for test execution -->
+        <!-- Extent Reports -->
         <dependency>
             <groupId>com.aventstack</groupId>
             <artifactId>extentreports</artifactId>
             <version>5.0.9</version>
         </dependency>
 
-        <!-- ================= Lombok (SAFE) ================= -->
-        <!-- Optional: used only if annotations like @Getter, @Setter are present -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -101,31 +97,26 @@
     <build>
         <plugins>
 
-            <!-- ================= Maven Compiler ================= -->
-            <!-- Ensures Java 11 compilation -->
+            <!-- Maven Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
 
-            <!-- ================= Maven Surefire ================= -->
-            <!-- REQUIRED to run TestNG XML files -->
+            <!-- Maven Surefire -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
                 <configuration>
-                    <!-- Default suite file -->
                     <suiteXmlFiles>
                         <suiteXmlFile>testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
-
-                    <!-- Prevent module issues -->
                     <useModulePath>false</useModulePath>
                 </configuration>
             </plugin>

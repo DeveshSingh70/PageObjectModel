@@ -69,14 +69,15 @@ public class LoginPageTest extends TestBase {
     @AfterMethod
     public void tearDown(ITestResult result) {
 
-        if (ITestResult.FAILURE == result.getStatus()) {
-            // ✅ PASS DRIVER + TEST NAME
-            TestUtil.takeScreenshotAtEndOfTest(driver, result.getName());
+        // ✅ Screenshot ONLY on FAILURE
+        if (result.getStatus() == ITestResult.FAILURE) {
+            TestUtil.takeScreenshotAtEndOfTest(result.getName());
         }
 
         if (driver != null) {
             driver.quit();
         }
+
     }
 
 }

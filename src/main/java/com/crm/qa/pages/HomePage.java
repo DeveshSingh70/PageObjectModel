@@ -2,8 +2,8 @@ package com.crm.qa.pages;
 
 import java.time.Duration;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -15,23 +15,20 @@ public class HomePage extends TestBase {
 
     // ================= Locators =================
 
-    /*
-     * Contacts menu in left sidebar
-     * span[text()='Contacts'] is directly inside <a> tag
-     * So we MUST use parent::a (NOT ancestor::a)
-     */
-    @FindBy(xpath = "//span[text()='Contacts']/parent::a")
+    // Contacts menu in left sidebar (React-safe)
+    @FindBy(css = "a[href='/contacts']")
     WebElement contactsMenu;
 
-    // Visible only on hover over Contacts
+    // Visible only on hover / click over Contacts
     @FindBy(xpath = "//a[@role='menuitem' and .='New']")
     WebElement newContactLink;
 
-
-    @FindBy(xpath = "//span[text()='Deals']/parent::a")
+    // Deals menu
+    @FindBy(css = "a[href='/deals']")
     WebElement dealsLink;
 
-    @FindBy(xpath = "//span[text()='Tasks']/parent::a")
+    // Tasks menu
+    @FindBy(css = "a[href='/tasks']")
     WebElement tasksLink;
 
     // ================= Constructor =================
@@ -46,13 +43,15 @@ public class HomePage extends TestBase {
         return driver.getTitle();
     }
 
-    /*
-     * Used in LoginTest
-     * Confirms login success by checking Contacts menu visibility
-     */
+    // Confirms login success by checking Contacts menu visibility
     public boolean isContactsMenuVisible() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        return wait.until(ExpectedConditions.visibilityOf(contactsMenu)).isDisplayed();
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            wait.until(ExpectedConditions.visibilityOf(contactsMenu));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // Click Contacts menu
@@ -62,25 +61,21 @@ public class HomePage extends TestBase {
         return new ContactsPage();
     }
 
-    /*
-     * Hover over Contacts and click New Contact
-     * Used in NewContact test
-     */
+    // Click New Contact
     public void clickOnNewContactLink() {
         contactsMenu.click();
-
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         wait.until(ExpectedConditions.elementToBeClickable(newContactLink)).click();
     }
 
-
-
+    // Click Deals menu
     public DealsPage clickOnDealsLink() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         wait.until(ExpectedConditions.elementToBeClickable(dealsLink)).click();
         return new DealsPage();
     }
 
+    // Click Tasks menu
     public TasksPage clickOnTasksLink() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         wait.until(ExpectedConditions.elementToBeClickable(tasksLink)).click();

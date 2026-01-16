@@ -1,14 +1,11 @@
 package com.crm.qa.base;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
@@ -23,27 +20,25 @@ public class TestBase {
     public static Properties prop;
 
     // ================= Constructor =================
+    // Loads configuration only once
     public TestBase() {
         try {
             prop = new Properties();
             FileInputStream ip = new FileInputStream(
                     System.getProperty("user.dir")
-                            + "/src/main/java/com/crm/qa/config/config.properties"
-            );
+                            + "/src/main/java/com/crm/qa/config/config.properties");
             prop.load(ip);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("config.properties not found", e);
         } catch (IOException e) {
-            throw new RuntimeException("Error loading config.properties", e);
+            throw new RuntimeException("Failed to load config.properties", e);
         }
     }
 
-    // ================= Initialization =================
-    public static void  initialization() {
+    // ================= Browser Initialization =================
+    public static void initialization() {
 
         String browserName = prop.getProperty("browser").toLowerCase();
 
-        // 1️⃣ Browser launch
+        // Browser selection
         switch (browserName) {
             case "chrome":
                 driver = WebDriverManager.chromedriver().create();
@@ -58,19 +53,19 @@ public class TestBase {
                 throw new RuntimeException("Unsupported browser: " + browserName);
         }
 
-        // 2️⃣ Register WebDriver Listener (Selenium 4)
+        // Register Selenium 4 WebDriver Listener (logging only)
         WebDriverListener listener = new WebEventListener();
         driver = new EventFiringDecorator(listener).decorate(driver);
 
-        // 3️⃣ Browser settings
+        // Browser settings
         driver.manage().window().maximize();
         driver.manage().deleteAllCookies();
+
+        // Explicit wait strategy only
         driver.manage().timeouts()
                 .pageLoadTimeout(Duration.ofSeconds(TestUtil.PAGE_LOAD_TIMEOUT));
 
-        // ❌ No implicit wait (explicit waits only)
-
-        // 4️⃣ Open application URL
+        // Launch application
         driver.get(prop.getProperty("url"));
     }
 }
