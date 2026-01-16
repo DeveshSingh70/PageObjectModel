@@ -71,17 +71,19 @@ pipeline {
         stage('Execute Automation Tests') {
             steps {
                 script {
-                    def suiteFile = params.SUITE == 'sanity'
-                                    ? 'testng_sanity.xml'
-                                    : 'testng.xml'
+                    def suiteFile = (params.SUITE == 'sanity')
+                            ? 'testng_sanity.xml'
+                            : 'testng.xml'
 
                     bat """
                         mvn clean test ^
                         -DsuiteXmlFile=${suiteFile} ^
                         -Denv=${params.ENV} ^
                         -Dbrowser=${params.BROWSER} ^
-                         -Dheadless=${params.HEADLESS}
-                                    """
-                                }
-                            }
-                        }
+                        -Dheadless=${params.HEADLESS}
+                    """
+                }
+            }
+        }
+    }
+}
