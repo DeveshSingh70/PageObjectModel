@@ -1,77 +1,55 @@
 /*
  =============================================================================
-  Jenkinsfile – Enterprise CI Pipeline for Test Automation
- -----------------------------------------------------------------------------
-  Tech Stack : Java | Selenium | TestNG | Maven | Jenkins | Extent Reports
-  Author     : Senior SDET
-  Purpose    : CI execution with parameterized, environment-based test runs
+  Jenkinsfile – Enterprise CI Pipeline (SDET Level)
  =============================================================================
 */
 
 pipeline {
 
-    /*************** AGENT CONFIGURATION ****************/
     agent any
 
-    /*************** TOOLS CONFIGURATION ****************/
     tools {
         jdk 'JDK17'
         maven 'Maven3'
     }
 
-    /*************** PIPELINE PARAMETERS ****************/
-    parameters {
-        choice(
-            name: 'ENV',
-            choices: ['QA', 'UAT'],
-            description: 'Select target environment'
-        )
-        choice(
-            name: 'BROWSER',
-            choices: ['chrome', 'firefox'],
-            description: 'Select browser'
-        )
-        choice(
-            name: 'SUITE',
-            choices: ['sanity', 'regression'],
-            description: 'Select test suite'
-        )
-        booleanParam(
-            name: 'HEADLESS',
-            defaultValue: true,
-            description: 'Run tests in headless mode'
-        )
+    /*************** NIGHTLY SCHEDULE ****************/
+    triggers {
+        cron('H 1 * * *')   // Runs daily around 1 AM
     }
 
-    /*************** ENVIRONMENT VARIABLES ****************/
+    parameters {
+        choice(name: 'ENV', choices: ['QA', 'UAT'], description: 'Target Environment')
+        choice(name: 'BROWSER', choices: ['chrome', 'firefox'], description: 'Browser')
+        choice(name: 'SUITE', choices: ['sanity', 'regression'], description: 'Test Suite')
+        booleanParam(name: 'HEADLESS', defaultValue: true, description: 'Headless Mode')
+    }
+
     environment {
         MAVEN_OPTS = '-Xmx1024m'
     }
 
     stages {
 
-        /*************** STAGE 1: CODE CHECKOUT ****************/
-        stage('Checkout Source Code') {
+        stage('Checkout Code') {
             steps {
                 checkout scm
             }
         }
 
-        /*************** STAGE 2: VALIDATION ****************/
         stage('Validate Inputs') {
             steps {
-                echo "Environment : ${params.ENV}"
-                echo "Browser     : ${params.BROWSER}"
-                echo "Suite       : ${params.SUITE}"
-                echo "Headless    : ${params.HEADLESS}"
+                echo "ENV      : ${params.ENV}"
+                echo "BROWSER  : ${params.BROWSER}"
+                echo "SUITE    : ${params.SUITE}"
+                echo "HEADLESS : ${params.HEADLESS}"
             }
         }
 
-        /*************** STAGE 3: TEST EXECUTION ****************/
-        stage('Execute Automation Tests') {
+        stage('Execute Tests') {
             steps {
                 script {
-                    def suiteFile = (params.SUITE == 'sanity')
+                    def suiteFile = params.SUITE == 'sanity'
                             ? 'testng_sanity.xml'
                             : 'testng.xml'
 
@@ -84,6 +62,59 @@ pipeline {
                     """
                 }
             }
+        }
+    }
+
+    /*************** REPORTS & EMAIL ****************/
+    post {
+
+        always {
+            // Publish TestNG results
+            junit 'target/surefire-reports/*.xml'
+
+            // Archive screenshots
+            archiveArtifacts artifacts: '**/screenshots/*.png', allowEmptyArchive: true
+
+            // Publish Extent Report
+            publishHTML([
+                reportDir: 'test-output',
+                reportFiles: 'ExtentReport.html',
+                reportName: 'Automation Test Report',
+                keepAll: true,
+                alwaysLinkToLastBuild: true
+            ])
+        }
+
+        success {
+            emailext(
+                subject: "✅ BUILD SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                <h2 style="color:green;">Automation Execution Successful</h2>
+                <p><b>Job:</b> ${env.JOB_NAME}</p>
+                <p><b>Build:</b> #${env.BUILD_NUMBER}</p>
+                <p><b>Environment:</b> ${params.ENV}</p>
+                <p><a href="${env.BUILD_URL}">🔗 View Jenkins Build</a></p>
+                """,
+                mimeType: 'text/html',
+                to: 'deveshsinghup70@gmail.com',
+                attachmentsPattern: 'test-output/ExtentReport.html,**/screenshots/*.png'
+            )
+        }
+
+        failure {
+            emailext(
+                subject: "❌ BUILD FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                <h2 style="color:red;">Automation Execution Failed</h2>
+                <p><b>Job:</b> ${env.JOB_NAME}</p>
+                <p><b>Build:</b> #${env.BUILD_NUMBER}</p>
+                <p><b>Environment:</b> ${params.ENV}</p>
+                <p><a href="${env.BUILD_URL}">🔗 View Jenkins Logs</a></p>
+                """,
+                mimeType: 'text/html',
+                to: 'deveshsinghup70@gmail.com',
+                attachmentsPattern: 'test-output/ExtentReport.html,**/screenshots/*.png'
+            )
         }
     }
 }
