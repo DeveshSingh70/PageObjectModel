@@ -143,7 +143,6 @@ pipeline {
                     reportDir: 'test-output',
                     reportFiles: 'ExtentReport.html',
                     reportName: 'Extent Automation Report'
-                     useWrapperFileDirectly: true
                 ]
             )
 
@@ -159,7 +158,6 @@ pipeline {
                     reportDir: 'test-output',
                     reportFiles: 'emailable-report.html',
                     reportName: 'TestNG Report'
-                    useWrapperFileDirectly: true
                 ]
             )
         }
