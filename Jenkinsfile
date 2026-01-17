@@ -142,7 +142,7 @@ pipeline {
                     keepAll: true,
                     reportDir: 'test-output',
                     reportFiles: 'ExtentReport.html',
-                    reportName: 'Extent Automation Report'
+                    reportName: 'TestNG Report'
                 ]
             )
 
