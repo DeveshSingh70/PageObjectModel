@@ -142,7 +142,8 @@ pipeline {
                     keepAll: true,
                     reportDir: 'test-output',
                     reportFiles: 'ExtentReport.html',
-                    reportName: 'TestNG Report'
+                    reportName: 'Extent Automation Report'
+                     useWrapperFileDirectly: true
                 ]
             )
 
@@ -156,8 +157,9 @@ pipeline {
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
                     reportDir: 'test-output',
-                    reportFiles: 'index.html',
+                    reportFiles: 'emailable-report.html',
                     reportName: 'TestNG Report'
+                    useWrapperFileDirectly: true
                 ]
             )
         }
