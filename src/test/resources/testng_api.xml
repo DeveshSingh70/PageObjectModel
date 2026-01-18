@@ -1,0 +1,53 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="API Automation Suite" verbose="1" parallel="none">
+
+    <!--
+        ==================================================
+        API TEST SUITE
+        This suite supports:
+        - Non-authenticated APIs
+        - Authenticated APIs (config-driven)
+        - Single token generation (BeforeSuite)
+        ==================================================
+    -->
+
+    <test name="API Tests">
+
+        <!--
+            NOTE:
+            BaseApiTest @BeforeSuite will execute ONCE
+            before any of the below test classes run.
+        -->
+
+        <classes>
+
+            <!-- ============================= -->
+            <!-- NON-AUTHENTICATED API TESTS  -->
+            <!-- ============================= -->
+
+            <class name="com.crm.qa.apiTests.GetUsersApiTest"/>
+            <class name="com.crm.qa.apiTests.CreateUserApiTest"/>
+            <class name="com.crm.qa.apiTests.UpdateUserApiTest"/>
+            <class name="com.crm.qa.apiTests.DeleteUserApiTest"/>
+
+            <!-- ============================= -->
+            <!-- AUTHENTICATED API TESTS       -->
+            <!-- ============================= -->
+            <!--
+                Enable these ONLY when:
+                api.token.enabled=true
+                in config.properties
+            -->
+
+            <!--
+            <class name="com.crm.qa.apiTests.SecuredProfileApiTest"/>
+                        <class name="com.crm.qa.apiTests.LoginApiTest"/>
+
+            -->
+
+        </classes>
+
+    </test>
+
+</suite>
