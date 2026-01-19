@@ -1,6 +1,6 @@
 # Selenium Test Automation Framework – Page Object Model
 
-## Java | Selenium WebDriver | TestNG | Maven
+## Java | Selenium WebDriver | TestNG | Maven | Rest Assured
 
 ## Overview
 
@@ -73,7 +73,7 @@ cd selenium-pom-framework
 ### Run tests using Maven
   mvn clean test
 ### Run using TestNG suite
-  mvn clean test -DsuiteXmlFile=testng.xmlgit status
+mvn clean test-DsuiteXmlFile=testng.xmlgit status
 
 ## CI/CD Compatibility
 -Jenkins

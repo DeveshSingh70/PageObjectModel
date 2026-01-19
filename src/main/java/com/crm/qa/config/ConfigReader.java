@@ -18,7 +18,7 @@ public class ConfigReader {
             InputStream inputStream =
                     Thread.currentThread()
                             .getContextClassLoader()
-                            .getResourceAsStream("config.properties");
+                            .getResourceAsStream("api-config.properties");
 
             if (inputStream == null) {
                 throw new RuntimeException(
